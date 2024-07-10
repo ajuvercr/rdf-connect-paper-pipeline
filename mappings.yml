@@ -1,0 +1,37 @@
+prefixes:
+ ex: "http://example.com/"
+ sosa: "http://www.w3.org/ns/sosa/"
+ xsd: "http://www.w3.org/2001/XMLSchema#"
+
+mappings:
+  temperature:
+    sources:
+      - ['data.json~jsonpath', '$']
+    s: http://example.com/data/temperature#$(.received_at)
+    po:
+      - [a, ex:TemperatureMeasurement]
+      - [a, sosa:Observation]
+      - [sosa:madeBySensor, http://example.com/sensor#$(.end_device_ids.device_id)~iri]
+      # - [sosa:hasFeatureOfInterst, http://dbpedia.org/resource/Atmosphere_of_Earth~iri]
+      - [sosa:resultTime, $(.uplink_message.received_at), xsd:dateTime]
+      - [sosa:hasSimpleResult, $(.uplink_message.decoded_payload.temperature)]
+
+  relHum:
+    sources:
+      - ['data.json~jsonpath', '$']
+    s: http://example.com/data/humidity#$(.received_at)
+    po:
+      - [a, ex:RelativeHumidityMeasurement]
+      - [a, sosa:Observation]
+      - [sosa:madeBySensor, http://example.com/sensor#$(.end_device_ids.device_id)~iri]
+      # - [sosa:hasFeatureOfInterst, http://dbpedia.org/resource/Atmosphere_of_Earth~iri]
+      - [sosa:resultTime, $(.uplink_message.received_at), xsd:dateTime]
+      - [sosa:hasSimpleResult, $(.uplink_message.decoded_payload.humidity)]
+
+  sensor:
+    sources:
+      - ['data.json~jsonpath', '$']
+    s: http://example.com/sensor#$(.end_device_ids.device_id)
+    po:
+      - [a, sosa:Sensor]
+

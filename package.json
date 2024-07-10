@@ -1,0 +1,24 @@
+{
+  "name": "rdf-connect-pipeline",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@rdfc/orchestrator": "git://github.com/rdf-connect/orchestrator.git#74549530a3ecbcb0a8bab1cd68fd40556cd4a8c5",
+    "@rdfc/file-utils-processors-ts": "^0.5.4",
+    "@rdfc/js-runner": "^0.2.1",
+    "@rdfc/rml-utils-processor-ts": "^0.6.5",
+    "@rdfc/sds-processors-ts": "^0.5.2",
+    "@rdfc/sds-storage-writer-ts": "^0.2.7",
+    "@rdfc/xml-utils-processors-ts": "^0.2.2",
+    "@types/node": "^20.14.9",
+    "n3": "^1.17.4",
+    "rdf-validate-shacl": "^0.5.5"
+  }
+}

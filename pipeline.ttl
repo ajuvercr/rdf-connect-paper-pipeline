@@ -1,0 +1,64 @@
+@prefix : <https://w3id.org/conn#>.
+@prefix js: <https://w3id.org/conn/js#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix rml: <https://w3id.org/conn/rml#>.
+@prefix ql: <http://semweb.mmlab.be/ns/ql#>.
+
+<> owl:imports <./node_modules/@rdfc/rml-utils-processor-ts/processors.ttl>.
+<> owl:imports <./node_modules/@rdfc/js-runner/ontology.ttl>.
+<> owl:imports <./node_modules/@rdfc/js-runner/channels/file.ttl>.
+<> owl:imports <./node_modules/@rdfc/js-runner/channels/http.ttl>.
+<> owl:imports <./processor.ttl>.
+
+[ ] a :FileChannel;
+  :reader <yarrmls/file>.
+
+<yarrmls/file> a :FileReaderChannel;
+  :fileReadFirstContent "true";
+  :fileOnReplace "true";
+  :filePath <./mappings.yml>.
+
+<rml/writer> a js:JsWriterChannel.
+<rml/reader> a js:JsReaderChannel.
+[ ] a js:JsChannel;
+  :reader <rml/reader>;
+  :writer <rml/writer>.
+
+[ ] a js:Y2R;
+  js:input <yarrmls/file>;
+  js:output <rml/writer>.
+
+[ ] a :HttpChannel;
+  :reader <http/reader>.
+
+<http/reader> a :HttpReaderChannel;
+  :httpPort 8888.
+
+<ttl-raw/writer> a js:JsWriterChannel.
+<ttl-raw/reader> a js:JsReaderChannel.
+[ ] a js:JsChannel;
+  :reader <ttl-raw/reader>;
+  :writer <ttl-raw/writer>.
+
+[ ] a :FileChannel;
+  :writer <output/file>.
+
+<output/file> a :FileWriterChannel;
+  :fileOnReplace "true";
+  :filePath <./output.ttl>.
+
+[ ] a js:RMLMapperReader;
+  js:output <ttl-raw/writer>;
+  js:rmlSource [
+    js:sourceLocation "data.json";
+    js:input <http/reader>;
+    js:trigger true;
+  ];
+  js:mappings <rml/reader>;
+  js:rmlJar <https://github.com/RMLio/rmlmapper-java/releases/download/v7.0.0/rmlmapper-7.0.0-r374-all.jar>.
+
+[ ] a js:ShaclValidator;
+  js:input <ttl-raw/reader>;
+  js:output <output/file>;
+  js:shacl <./shape.ttl>.
+

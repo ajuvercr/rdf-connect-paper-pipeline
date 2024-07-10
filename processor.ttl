@@ -1,0 +1,99 @@
+@prefix js: <https://w3id.org/conn/js#>.
+@prefix rdfl: <https://w3id.org/rdf-lens/ontology#>.
+@prefix fno: <https://w3id.org/function/ontology#>.
+@prefix fnom: <https://w3id.org/function/vocabulary/mapping#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix : <https://w3id.org/conn#>.
+@prefix sh: <http://www.w3.org/ns/shacl#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix dc: <http://purl.org/dc/terms/>.
+
+js:SparqlQueryCreator a js:JsProcess;
+  dc:title "Sparql Query Creator processor";
+  dc:description "Create a simple INSERT statement from incoming quads";
+  js:file <./sparqlQueryCreator.js>;
+  js:function "processor";
+  js:location <./>;
+  js:mapping [
+    a fno:Mapping;
+    fno:parameterMapping [
+      a fnom:PositionParameterMapping;
+      fnom:functionParameter "Data input channel";
+      fnom:implementationParameterPosition "0"^^xsd:int;
+    ], [
+      a fnom:PositionParameterMapping;
+      fnom:functionParameter "Data output channel";
+      fnom:implementationParameterPosition "1"^^xsd:int;
+    ], [
+      a fnom:PositionParameterMapping;
+      fnom:functionParameter "Graph";
+      fnom:implementationParameterPosition "2"^^xsd:int;
+    ];
+  ].
+
+[ ] a sh:NodeShape;
+  sh:targetClass js:SparqlQueryCreator;
+  sh:property [
+    sh:class :ReaderChannel;
+    sh:path js:input;
+    sh:name "Data input channel";
+    sh:maxCount 1;
+    sh:minCount 1;
+  ], [
+    sh:class :WriterChannel;
+    sh:path js:output;
+    sh:name "Data output channel";
+    sh:maxCount 1;
+    sh:minCount 1;
+  ], [
+    sh:datatype xsd:string;
+    sh:path js:graph;
+    sh:name "Graph";
+    sh:maxCount 1;
+  ].
+
+js:ShaclValidator a js:JsProcess;
+  dc:title "SHACL validator processor";
+  dc:description "Validates incoming messages according to some shacl shape";
+  js:file <./sparqlQueryCreator.js>;
+  js:function "shaclValidate";
+  js:location <./>;
+  js:mapping [
+    a fno:Mapping;
+    fno:parameterMapping [
+      a fnom:PositionParameterMapping;
+      fnom:functionParameter "Data input channel";
+      fnom:implementationParameterPosition "0"^^xsd:int;
+    ], [
+      a fnom:PositionParameterMapping;
+      fnom:functionParameter "Data output channel";
+      fnom:implementationParameterPosition "1"^^xsd:int;
+    ], [
+      a fnom:PositionParameterMapping;
+      fnom:functionParameter "ShaclPath";
+      fnom:implementationParameterPosition "2"^^xsd:int;
+    ];
+  ].
+
+[ ] a sh:NodeShape;
+  sh:targetClass js:ShaclValidator;
+  sh:property [
+    sh:class :ReaderChannel;
+    sh:path js:input;
+    sh:name "Data input channel";
+    sh:maxCount 1;
+    sh:minCount 1;
+  ], [
+    sh:class :WriterChannel;
+    sh:path js:output;
+    sh:name "Data output channel";
+    sh:maxCount 1;
+    sh:minCount 1;
+  ], [
+    sh:datatype xsd:string;
+    sh:path js:shacl;
+    sh:name "ShaclPath";
+    sh:maxCount 1;
+    sh:minCount 1;
+  ].
+
