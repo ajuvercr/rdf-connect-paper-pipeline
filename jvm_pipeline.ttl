@@ -3,13 +3,15 @@
 @prefix owl: <http://www.w3.org/2002/07/owl#>.
 @prefix rml: <https://w3id.org/conn/rml#>.
 @prefix ql: <http://semweb.mmlab.be/ns/ql#>.
+@prefix jvm: <https://w3id.org/conn/jvm#>.
 
+<> owl:imports <./node_modules/@rdfc/orchestrator/src/main/resources/pipeline.ttl>.
+<> owl:imports <./node_modules/@rdfc/orchestrator/src/main/resources/std/rdf_validator.ttl>.
 <> owl:imports <./node_modules/@rdfc/rml-utils-processor-ts/processors.ttl>.
 <> owl:imports <./node_modules/@rdfc/js-runner/ontology.ttl>.
 <> owl:imports <./node_modules/@rdfc/js-runner/channels/file.ttl>.
 <> owl:imports <./node_modules/@rdfc/js-runner/channels/http.ttl>.
 <> owl:imports <./processor.ttl>.
-
 [ ] a :FileChannel;
   :reader <yarrmls/file>.
 
@@ -34,11 +36,13 @@
 <http/reader> a :HttpReaderChannel;
   :httpPort 8888.
 
-<ttl-raw/writer> a js:JsWriterChannel.
-<ttl-raw/reader> a js:JsReaderChannel.
-[ ] a js:JsChannel;
-  :reader <ttl-raw/reader>;
-  :writer <ttl-raw/writer>.
+<ttl-raw/writer> a :HttpWriterChannel;
+    :httpEndpoint "http://localhost:8000";
+    :httpMethod "POST".
+
+<ttl-raw/reader> a jvm:HttpChannelReader;
+  jvm:port 8000.
+
 
 [ ] a :FileChannel;
   :writer <output/file>.
@@ -57,8 +61,17 @@
   js:mappings <rml/reader>;
   js:rmlJar <https://github.com/RMLio/rmlmapper-java/releases/download/v7.0.0/rmlmapper-7.0.0-r374-all.jar>.
 
-[ ] a js:ShaclValidator;
-  js:input <ttl-raw/reader>;
-  js:output <output/file>;
-  js:shacl <./shape.ttl>.
+# [ ] a js:ShaclValidator;
+#   js:input <ttl-raw/reader>;
+#   js:output <output/file>;
+#   js:shacl <./shape.ttl>.
+
+
+<writer> a jvm:HttpChannelWriter;
+  jvm:endpoint "http://localhost:8083".
+
+[ ] a jvm:RDFValidator;
+  jvm:shapes "../../../shape.ttl";
+  jvm:input <ttl-raw/reader>;
+  jvm:output <writer>.
 

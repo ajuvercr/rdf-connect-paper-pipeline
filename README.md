@@ -16,12 +16,17 @@ gradle clean build
 ```bash
 
 cd node_modules/@rdfc/orchestrator
-gradle run --args "../../jvm_pipeline.ttl"
+gradle run --args "../../../jvm_pipeline.ttl"
 ```
 
 ## Start JS runner
 
 ```bash
-npx js-runner ./jvm_pipeline.ttl
+bunx --bun js-runner ./jvm_pipeline.ttl
 ```
 
+## Ingest data
+
+```bash
+curl -X POST -d @data.json localhost:8888
+```
