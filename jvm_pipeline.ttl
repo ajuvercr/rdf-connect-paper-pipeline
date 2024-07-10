@@ -40,8 +40,8 @@
     :httpEndpoint "http://localhost:8000";
     :httpMethod "POST".
 
-<ttl-raw/reader> a jvm:HttpChannelReader;
-  jvm:port 8000.
+<ttl-raw/reader> a :HttpReaderChannel;
+  :httpPort 8000.
 
 
 [ ] a :FileChannel;
@@ -67,8 +67,9 @@
 #   js:shacl <./shape.ttl>.
 
 
-<writer> a jvm:HttpChannelWriter;
-  jvm:endpoint "http://localhost:8083".
+<writer> a :HttpWriterChannel;
+  :httpMethod "POST";
+  :httpEndpoint "http://localhost:8083".
 
 [ ] a jvm:RDFValidator;
   jvm:shapes "../../../shape.ttl";
