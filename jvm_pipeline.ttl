@@ -5,6 +5,7 @@
 @prefix ql: <http://semweb.mmlab.be/ns/ql#>.
 @prefix jvm: <https://w3id.org/conn/jvm#>.
 
+<> owl:imports <./node_modules/@rdfc/file-utils-processors-ts/processors.ttl>.
 <> owl:imports <./node_modules/@rdfc/orchestrator/src/main/resources/pipeline.ttl>.
 <> owl:imports <./node_modules/@rdfc/orchestrator/src/main/resources/std/rdf_validator.ttl>.
 <> owl:imports <./node_modules/@rdfc/rml-utils-processor-ts/processors.ttl>.
@@ -12,13 +13,16 @@
 <> owl:imports <./node_modules/@rdfc/js-runner/channels/file.ttl>.
 <> owl:imports <./node_modules/@rdfc/js-runner/channels/http.ttl>.
 <> owl:imports <./processor.ttl>.
-[ ] a :FileChannel;
-  :reader <yarrmls/file>.
 
-<yarrmls/file> a :FileReaderChannel;
-  :fileReadFirstContent "true";
-  :fileOnReplace "true";
-  :filePath <./mappings.yml>.
+<yml/writer> a js:JsWriterChannel.
+<yml/reader> a js:JsReaderChannel.
+[ ] a js:JsChannel;
+  :reader <yml/reader>;
+  :writer <yml/writer>.
+
+[] a js:GlobRead;
+    js:glob <./mappings.yml>;
+    js:output <yml/writer>.
 
 <rml/writer> a js:JsWriterChannel.
 <rml/reader> a js:JsReaderChannel.
@@ -27,7 +31,7 @@
   :writer <rml/writer>.
 
 [ ] a js:Y2R;
-  js:input <yarrmls/file>;
+  js:input <yml/reader>;
   js:output <rml/writer>.
 
 [ ] a :HttpChannel;
@@ -36,7 +40,7 @@
 <http/reader> a :HttpReaderChannel;
   :httpPort 8888.
 
-<ttl-raw/writer> a :HttpWriterChannel;
+<ttl-raw/writer2> a :HttpWriterChannel;
     :httpEndpoint "http://localhost:8000";
     :httpMethod "POST".
 
@@ -52,7 +56,7 @@
   :filePath <./output.ttl>.
 
 [ ] a js:RMLMapperReader;
-  js:output <ttl-raw/writer>;
+  js:output <ttl-raw/writer2>;
   js:rmlSource [
     js:sourceLocation "data.json";
     js:input <http/reader>;
