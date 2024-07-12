@@ -1,5 +1,6 @@
 {
   "name": "rdf-connect-pipeline",
+  "type": "module",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -18,6 +19,7 @@
     "@rdfc/sds-storage-writer-ts": "^0.2.7",
     "@rdfc/xml-utils-processors-ts": "^0.2.2",
     "@types/node": "^20.14.9",
+    "fetch-sparql-endpoint": "^5.1.0",
     "n3": "^1.17.4",
     "rdf-validate-shacl": "^0.5.5"
   }

@@ -13,16 +13,17 @@
 <> owl:imports <./node_modules/@rdfc/js-runner/channels/file.ttl>.
 <> owl:imports <./node_modules/@rdfc/js-runner/channels/http.ttl>.
 <> owl:imports <./processor.ttl>.
-
+#  
 <yml/writer> a js:JsWriterChannel.
+
 <yml/reader> a js:JsReaderChannel.
 [ ] a js:JsChannel;
   :reader <yml/reader>;
   :writer <yml/writer>.
 
-[] a js:GlobRead;
-    js:glob <./mappings.yml>;
-    js:output <yml/writer>.
+[ ] a js:GlobRead;
+  js:glob <./mappings.yml>;
+  js:output <yml/writer>.
 
 <rml/writer> a js:JsWriterChannel.
 <rml/reader> a js:JsReaderChannel.
@@ -40,23 +41,30 @@
 <http/reader> a :HttpReaderChannel;
   :httpPort 8888.
 
-<ttl-raw/writer2> a :HttpWriterChannel;
-    :httpEndpoint "http://localhost:8000";
-    :httpMethod "POST".
+[ ] a :HttpChannel;
+  :writer <ttl-raw/writer>;
+  :reader <ttl-raw/reader>.
+
+<ttl-raw/writer> a :HttpWriterChannel;
+  :httpEndpoint "http://localhost:8000";
+  :httpMethod "POST".
 
 <ttl-raw/reader> a :HttpReaderChannel;
   :httpPort 8000.
 
+[ ] a :HttpChannel;
+  :writer <valid/writer>;
+  :reader <valid/reader>.
 
-[ ] a :FileChannel;
-  :writer <output/file>.
+<valid/writer> a :HttpWriterChannel;
+  :httpEndpoint "http://localhost:8001";
+  :httpMethod "POST".
 
-<output/file> a :FileWriterChannel;
-  :fileOnReplace "true";
-  :filePath <./output.ttl>.
+<valid/reader> a :HttpReaderChannel;
+  :httpPort 8001.
 
 [ ] a js:RMLMapperReader;
-  js:output <ttl-raw/writer2>;
+  js:output <ttl-raw/writer>;
   js:rmlSource [
     js:sourceLocation "data.json";
     js:input <http/reader>;
@@ -65,18 +73,13 @@
   js:mappings <rml/reader>;
   js:rmlJar <https://github.com/RMLio/rmlmapper-java/releases/download/v7.0.0/rmlmapper-7.0.0-r374-all.jar>.
 
-# [ ] a js:ShaclValidator;
-#   js:input <ttl-raw/reader>;
-#   js:output <output/file>;
-#   js:shacl <./shape.ttl>.
-
-
-<writer> a :HttpWriterChannel;
-  :httpMethod "POST";
-  :httpEndpoint "http://localhost:8083".
-
 [ ] a jvm:RDFValidator;
   jvm:shapes "../../../shape.ttl";
   jvm:input <ttl-raw/reader>;
-  jvm:output <writer>.
+  jvm:output <valid/writer>.
+
+[ ] a js:SparqlQueryCreator;
+  js:input <valid/reader>;
+  js:endpoint "http://localhost:8890/sparql";
+  js:graph <http://www.example.com/my-graph>.
 
