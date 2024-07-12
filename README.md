@@ -22,7 +22,7 @@ gradle run --args "../../../jvm_pipeline.ttl"
 ## Start JS runner
 
 ```bash
-bunx --bun js-runner ./jvm_pipeline.ttl
+npx js-runner ./jvm_pipeline.ttl
 ```
 
 ## Start Virtuoso
